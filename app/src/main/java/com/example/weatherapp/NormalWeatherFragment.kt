@@ -1,11 +1,7 @@
 package com.example.weatherapp
 
-import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,14 +13,6 @@ import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.Executors
-import kotlin.math.roundToInt
 
 class NormalWeatherFragment : Fragment() {
 
@@ -52,8 +40,6 @@ class NormalWeatherFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        viewModel.loaded.value = false
 
         temperatureTV = view.findViewById(R.id.tv_temperature)
         pressureTV = view.findViewById(R.id.tv_pressure)
@@ -91,11 +77,22 @@ class NormalWeatherFragment : Fragment() {
             weatherIV.setImageBitmap(it)
         }
 
+        viewModel.loaded.observe(this.viewLifecycleOwner) { loaded ->
+            if(loaded){
+                cityET.setText(viewModel.name)
+            }
+        }
+        viewModel.failed.observe(this.viewLifecycleOwner){ failed ->
+            if(failed){
+                cityET.setText(viewModel.name)
+            }
+        }
+
         refreshIV = view.findViewById(R.id.iv_refresh)
         searchIV = view.findViewById(R.id.iv_search)
 
         refreshIV.setOnClickListener {
-            viewModel.getWeather(requireContext())
+            viewModel.getWeather(requireContext(), viewModel.name)
             Toast.makeText(requireContext(), "Refreshed!", Toast.LENGTH_SHORT).show()
             cityET.clearFocus()
             it.hideKeyboard()
@@ -103,10 +100,21 @@ class NormalWeatherFragment : Fragment() {
         cityET.setOnClickListener {
             cityET.setText("")
         }
+        cityET.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if(keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                viewModel.loaded.value = false
+                cityET.setText(cityET.text.toString().trim())
+                viewModel.getWeather(requireContext(), cityET.text.toString())
+                cityET.clearFocus()
+                v.hideKeyboard()
+                return@OnKeyListener false
+            }
+            false
+        })
         searchIV.setOnClickListener {
+            viewModel.loaded.value = false
             cityET.setText(cityET.text.toString().trim())
-            viewModel.name = cityET.text.toString()
-            viewModel.getWeather(requireContext())
+            viewModel.getWeather(requireContext(), cityET.text.toString())
             cityET.clearFocus()
             it.hideKeyboard()
         }

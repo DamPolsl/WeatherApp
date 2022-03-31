@@ -4,6 +4,7 @@ import android.graphics.drawable.GradientDrawable
 import android.icu.lang.UCharacter
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -56,11 +57,21 @@ class StartFragment : Fragment() {
         cityET.setOnClickListener {
             cityET.setText("")
         }
+        cityET.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if(keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                viewModel.loaded.value = false
+                cityET.setText(cityET.text.toString().trim())
+                viewModel.getWeather(requireContext(), cityET.text.toString())
+                cityET.clearFocus()
+                v.hideKeyboard()
+                return@OnKeyListener false
+            }
+            false
+        })
 
         searchButton.setOnClickListener {
             it.isEnabled = false
-            viewModel.name = cityET.text.toString()
-            viewModel.getWeather(requireContext())
+            viewModel.getWeather(requireContext(), cityET.text.toString())
             cityET.clearFocus()
             it.hideKeyboard()
         }
@@ -68,6 +79,7 @@ class StartFragment : Fragment() {
         viewModel.loaded.observe(viewLifecycleOwner){ loaded ->
             if(loaded){
                 viewModel.simpleView.observe(viewLifecycleOwner){ isSimple ->
+                    viewModel.loaded.value = false
                     if(isSimple){
                         view.findNavController().navigate(R.id.action_startFragment_to_simpleWeatherFragment)
                     } else {

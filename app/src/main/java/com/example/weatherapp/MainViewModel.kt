@@ -39,11 +39,13 @@ class MainViewModel: ViewModel() {
     var failed = MutableLiveData(false)
 
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
-    fun getWeather(context: Context) {
+    fun getWeather(context: Context, cityName: String) {
+
         // Instantiate the RequestQueue.
         val queue = Volley.newRequestQueue(context)
+        val apiKey = context.applicationInfo.metaData.getString("owmKey")
         val url =
-            "https://api.openweathermap.org/data/2.5/weather?q=${name}&units=metric&lang=pl&appid=528c0e9c2d63bb00540f336b0e748d00"
+            "https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&lang=pl&appid=${apiKey}"
 
         // Request a string response from the provided URL.
         val stringRequest = StringRequest(
@@ -76,17 +78,17 @@ class MainViewModel: ViewModel() {
                 this.temperature.value = jsonObjectMain.getDouble("temp").roundToInt().toString()
                 this.pressure.value = jsonObjectMain.getInt("pressure").toString()
                 // for datetime and city name
-                val cityName = jsonResponse.getString("name")
+                val city = jsonResponse.getString("name")
                 val timezone = jsonResponse.getLong("timezone")
                 val timezoneOffset = (TimeZone.getDefault().getOffset(Date().time)/1000.0).toLong()
-                val dt = jsonResponse.getLong("dt") + timezone - 3600
+                val dt = jsonResponse.getLong("dt")
                 val simpleDate = SimpleDateFormat("dd/MM/yyyy")
                 val simpleTime = SimpleDateFormat("HH:mm")
-                val currentDate = simpleDate.format(Date(dt * 1000))
-                val currentTime = simpleTime.format(Date(dt * 1000))
+                val currentDate = simpleDate.format(Date((dt + timezone - timezoneOffset) * 1000))
+                val currentTime = simpleTime.format(Date((dt + timezone - timezoneOffset) * 1000))
                 this.date.value = currentDate
                 this.time.value = currentTime
-                this.name = cityName
+                this.name = city
                 // for sunset and sunrise
                 val jsonObjectSys = jsonResponse.getJSONObject("sys")
                 //sunrise

@@ -1,6 +1,7 @@
 package com.example.weatherapp
 
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +41,7 @@ class SimpleWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.loaded.value = false
+        //viewModel.loaded.value = false
 
         temperatureTV = view.findViewById(R.id.tv_temperature)
         pressureTV = view.findViewById(R.id.tv_pressure)
@@ -78,11 +79,22 @@ class SimpleWeatherFragment : Fragment() {
             weatherIV.setImageBitmap(it)
         }
 
+        viewModel.loaded.observe(this.viewLifecycleOwner) { loaded ->
+            if(loaded){
+                cityET.setText(viewModel.name)
+            }
+        }
+        viewModel.failed.observe(this.viewLifecycleOwner){ failed ->
+            if(failed){
+                cityET.setText(viewModel.name)
+            }
+        }
+
         refreshIV = view.findViewById(R.id.iv_refresh)
         searchIV = view.findViewById(R.id.iv_search)
 
         refreshIV.setOnClickListener {
-            viewModel.getWeather(requireContext())
+            viewModel.getWeather(requireContext(), viewModel.name)
             Toast.makeText(requireContext(), "Refreshed!", Toast.LENGTH_SHORT).show()
             cityET.clearFocus()
             it.hideKeyboard()
@@ -90,10 +102,21 @@ class SimpleWeatherFragment : Fragment() {
         cityET.setOnClickListener {
             cityET.setText("")
         }
+        cityET.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if(keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                viewModel.loaded.value = false
+                cityET.setText(cityET.text.toString().trim())
+                viewModel.getWeather(requireContext(), cityET.text.toString())
+                cityET.clearFocus()
+                v.hideKeyboard()
+                return@OnKeyListener false
+            }
+            false
+        })
         searchIV.setOnClickListener {
+            viewModel.loaded.value = false
             cityET.setText(cityET.text.toString().trim())
-            viewModel.name = cityET.text.toString()
-            viewModel.getWeather(requireContext())
+            viewModel.getWeather(requireContext(), cityET.text.toString())
             cityET.clearFocus()
             it.hideKeyboard()
         }
