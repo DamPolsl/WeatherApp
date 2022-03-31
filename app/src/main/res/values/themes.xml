@@ -1,0 +1,23 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.WeatherApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/brown_700</item>
+        <item name="colorPrimaryVariant">@color/brown_500</item>
+        <item name="colorOnPrimary">@color/brown_200</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/blue_700</item>
+        <item name="colorSecondaryVariant">@color/blue_500</item>
+        <item name="colorOnSecondary">@color/gray</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+        <item name="android:colorBackground">@color/brown_200</item>
+    </style>
+
+    <style name="CustomCardview1" parent="CardView">
+        <item name="cardBackgroundColor">@color/blue_700</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+</resources>

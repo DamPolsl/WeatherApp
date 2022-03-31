@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Weather App</string>
+    <string name="simple_view">Uproszczony widok:</string>
+    <string name="on">Wł.</string>
+    <string name="off">Wył.</string>
+    <string name="title">Prognoza\npogody</string>
+    <string name="search">Sprawdź</string>
+    <string name="refresh">Odśwież</string>
+    <string name="search_hint">Wprowadź miasto…</string>
+    <string name="date">20.03.2022</string>
+    <string name="time">13:37</string>
+    <string name="temperature">14</string>
+    <string name="temp_unit">°C</string>
+    <string name="pressure">997</string>
+    <string name="pressure_unit">hPa</string>
+    <string name="short_desc">Słonecznie</string>
+    <string name="sunrise">Wschód:</string>
+    <string name="sunset">Zachód:</string>
+    <string name="button_desc">Clickable icon button</string>
+    <string name="weather_icon_desc">Weather icon</string>
+
+    <string name="api_error">Nie udało się pobrać danych.</string>
+</resources>
