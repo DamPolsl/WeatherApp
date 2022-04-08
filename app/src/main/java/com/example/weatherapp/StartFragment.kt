@@ -60,6 +60,7 @@ class StartFragment : Fragment() {
         cityET.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if(keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 viewModel.loaded.value = false
+                searchButton.isEnabled = false
                 cityET.setText(cityET.text.toString().trim())
                 viewModel.getWeather(requireContext(), cityET.text.toString())
                 cityET.clearFocus()

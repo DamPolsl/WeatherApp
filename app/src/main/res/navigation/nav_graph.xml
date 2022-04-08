@@ -21,10 +21,18 @@
         android:id="@+id/normalWeatherFragment"
         android:name="com.example.weatherapp.NormalWeatherFragment"
         android:label="fragment_normal_weather"
-        tools:layout="@layout/fragment_normal_weather" />
+        tools:layout="@layout/fragment_normal_weather" >
+        <action
+            android:id="@+id/action_normalWeatherFragment_to_simpleWeatherFragment"
+            app:destination="@id/simpleWeatherFragment" />
+    </fragment>
     <fragment
         android:id="@+id/simpleWeatherFragment"
         android:name="com.example.weatherapp.SimpleWeatherFragment"
         android:label="fragment_simple_weather"
-        tools:layout="@layout/fragment_simple_weather" />
+        tools:layout="@layout/fragment_simple_weather" >
+        <action
+            android:id="@+id/action_simpleWeatherFragment_to_normalWeatherFragment"
+            app:destination="@id/normalWeatherFragment" />
+    </fragment>
 </navigation>

@@ -6,13 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 
 class NormalWeatherFragment : Fragment() {
 
@@ -30,6 +28,8 @@ class NormalWeatherFragment : Fragment() {
 
     private lateinit var searchIV: ImageView
     private lateinit var refreshIV: ImageView
+
+    private lateinit var simpleToggleButton: ToggleButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +50,9 @@ class NormalWeatherFragment : Fragment() {
         sunriseTV = view.findViewById(R.id.tv_sunrise)
         sunsetTV = view.findViewById(R.id.tv_sunset)
         weatherIV = view.findViewById(R.id.iv_weather)
+
+        simpleToggleButton = view.findViewById(R.id.tb_simple_toggle)
+        simpleToggleButton.isChecked = false
 
         viewModel.temperature.observe(this.viewLifecycleOwner) {
             temperatureTV.text = it
@@ -87,6 +90,14 @@ class NormalWeatherFragment : Fragment() {
                 cityET.setText(viewModel.name)
             }
         }
+
+        simpleToggleButton.setOnCheckedChangeListener { _, isChecked ->
+            if(isChecked){
+                viewModel.simpleView.value = isChecked
+                findNavController().navigate(R.id.action_normalWeatherFragment_to_simpleWeatherFragment)
+            }
+        }
+
 
         refreshIV = view.findViewById(R.id.iv_refresh)
         searchIV = view.findViewById(R.id.iv_search)
